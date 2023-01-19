@@ -4,20 +4,20 @@ let asserters = wd.asserters;
 
 desiredCaps = {
   // Set your BrowserStack access credentials
-  'browserstack.user' : 'YOUR_USERNAME',
-  'browserstack.key' : 'YOUR_ACCESS_KEY',
+  'browserstack.user' : '',
+  'browserstack.key' : '',
 
   // Set URL of the application under test
-  'app' : 'bs://<app-id>',
+  'app' : 'bs://75bc72c7995bceee9e780aa530ce06a85c1a017b',
 
   // Specify device and os_version for testing
-  'device' : 'Google Pixel 3',
-  'os_version' : '9.0',
+  'device' : 'Google Pixel 6 Pro',
+  'os_version' : '13.0',
 
   // Set other BrowserStack capabilities
-  'project' : 'First NodeJS project',
-  'build' : 'Node Android',
-  'name': 'first_test'
+  'project' : 'Second NodeJS project',
+  'build' : 'Node with Appuim',
+  'name': 'automate_workflow'
 };
 
 // Initialize the remote Webdriver using BrowserStack remote URL
@@ -27,28 +27,62 @@ driver = wd.promiseRemote("http://hub-cloud.browserstack.com/wd/hub");
 // Test case for the BrowserStack sample Android app. 
 // If you have uploaded your app, update the test case here. 
 driver.init(desiredCaps)
+.then(function () {
+  return driver.waitForElementById(
+    'com.android.permissioncontroller:id/permission_allow_button', asserters.isDisplayed 
+    && asserters.isEnabled, 30000);
+})
+.then(function (allowBtn) {
+  return allowBtn.click();
+})
   .then(function () {
-    return driver.waitForElementByAccessibilityId(
-      'Search Wikipedia', asserters.isDisplayed 
+    return driver.waitForElementByXPath(
+      '(//android.view.ViewGroup[@content-desc="COUNTRY"])[6]', asserters.isDisplayed 
       && asserters.isEnabled, 30000);
   })
-  .then(function (searchElement) {
-    return searchElement.click();
+  .then(function (country) {
+    return country.click();
+  }) 
+  .then(function () {
+    return driver.waitForElementByAccessibilityId(
+      'LANGUAGE', asserters.isDisplayed 
+      && asserters.isEnabled, 30000);
+  })
+  .then(function (english){
+    return english.click()
   })
   .then(function () {
-    return driver.waitForElementById(
-      'org.wikipedia.alpha:id/search_src_text', asserters.isDisplayed 
+    return driver.waitForElementByXPath(
+      '(//android.view.ViewGroup[@content-desc="BTN_LOGIN"])[2]/android.widget.TextView', asserters.isDisplayed 
+      && asserters.isEnabled, 30000);
+  })
+  .then(function (login) {
+    return login.click();
+  }) 
+  .then(function () {
+    return driver.waitForElementByAccessibilityId(
+      'fld-username', asserters.isDisplayed 
       && asserters.isEnabled, 30000);
   })
   .then(function (searchInput) {
-    return searchInput.sendKeys("BrowserStack");
+    return searchInput.sendKeys("username");
   })
   .then(function () {
-    return driver.elementsByClassName('android.widget.TextView');    
+    return driver.waitForElementByAccessibilityId(
+      'fld-password', asserters.isDisplayed 
+      && asserters.isEnabled, 30000);
   })
-  .then(function (search_results) {
-    assert(search_results.length > 0);
+  .then(function (searchInput) {
+    return searchInput.sendKeys("password");
   })
+  .then(function () {
+    return driver.waitForElementByXPath(
+      '//android.view.ViewGroup[@content-desc="btn-login"]/android.view.ViewGroup/android.widget.TextView', asserters.isDisplayed 
+      && asserters.isEnabled, 30000);
+  })
+  .then(function (login) {
+    return login.click();
+  }) 
   .fin(function() { 
     // Invoke driver.quit() after the test is done to indicate that the test is completed.
     return driver.quit(); 

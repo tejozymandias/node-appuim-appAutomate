@@ -12,6 +12,9 @@
     "appium",
     "tests"
   ],
+  "scripts": {
+    "parallel":"node ./android/BrowserStackSample.js"
+  },
   "bugs": {
     "url": "https://github.com/browserstack/node-appium-app-browserstack/issues"
   },
