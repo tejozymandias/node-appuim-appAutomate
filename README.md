@@ -9,6 +9,8 @@ git clone https://github.com/tejozymandias/node-appuim-appAutomate.git
 cd node-appuim-appAutomate
 
 npm install
+
+npm run parallel
 ```
 
 ## Getting Started
